@@ -7,17 +7,22 @@ config();
 
 const tu = new TextUtils();
 const cu = new CryptUtil();
-const r = new Requester();
 
 const srcText =
-  "zXYTwrrQ4wgb8PcLqwrTocasU2irmiDhnSLrCl8O643IABoe8cgb-QW-sXrZeOofvz!gSUQtnroGStbsMECwBd0ePGUoFtmGBvuurBfbhQIIKuFARo01Q!pkEeRioXVLQ5xeTPKWORw3f0QbbETDw3zhbcv4AA9dpKcOE4vdauTguyeIyXXqGZ1p0HZ6eJPDw9bQpqGViGv!zoq49l9jsQ~~";
+  "bmAn3g7V!pfMYMkte0Y9kZEHZr!kL0lnPDzylll!p4oEBYbMaa6abOmqpb8wgh3Xx7-Nlm3HceJ22BjWanUGWBSCGaMI-uUxbrUeSczF5KYS47XsnJ3LwsCwkeFucb4nZYm6vcRu9XmI9DypGJ4j!eddYJjFCeJ1R0BTBURrdrlyYjZBVaRBMPq39lgtLKFFvKr-AiEqQ-4-4nyuN80Bpw~~";
 const src = tu.src2bytes(srcText);
 
 async function main() {
   const blocks = cu.splitBlocks(src);
-  const iv = blocks.splice(0, 1)[0];
+  // const iv = blocks.splice(0, 1)[0];
 
-  r.findIntermediateFingerprint(blocks[0]);  
+  const block = blocks[1];
+  const iv = blocks[0];
+
+  const r = new Requester(block, iv);
+
+  const decrypted = await r.decipherBlock();
+  console.log(decrypted.toString());
 }
 
 main();

@@ -1,10 +1,11 @@
-export default class CryptUtil
-{
+export default class CryptUtil {
   splitBlocks(src: Buffer, bsize = 16): Buffer[] {
     if (src.length % bsize !== 0) {
-      throw new Error(`Cannot split block that size ${src.length} per ${bsize} bytes!`);
+      throw new Error(
+        `Cannot split block that size ${src.length} per ${bsize} bytes!`
+      );
     }
-    
+
     const blocks = [];
 
     for (let i = 0, l = src.length / bsize; i < l; i++) {
@@ -28,25 +29,5 @@ export default class CryptUtil
     }
 
     return result;
-  }
-
-  initialFPBlock(bsize = 16): Buffer {
-    const fpBlock = Buffer.allocUnsafe(bsize);
-    fpBlock.fill(0);
-    fpBlock[fpBlock.length - 1] = 1;
-
-    return fpBlock;
-  }
-
-  increasePadding(block: Buffer): Buffer {
-    const bsize = block.length;
-    const padding = block[bsize - 1];
-    const newPadding = padding + 1;
-
-    for (let i = bsize - newPadding, l = bsize; i < l; i++) {
-      block[i] = newPadding;
-    }
-
-    return block;
   }
 }

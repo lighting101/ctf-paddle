@@ -7,7 +7,10 @@ export default class TextUtils {
 
   bytes2src(bytes: Buffer): string {
     const b64 = bytes.toString("base64");
-    const encoded = b64.replace(/=/g, "~").replace(/\+/g, "-").replace(/\//g, "!");
+    const encoded = b64
+      .replace(/=/g, "~")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "!");
 
     return encoded;
   }

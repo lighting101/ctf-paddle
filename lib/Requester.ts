@@ -1,25 +1,27 @@
 import fetch from "node-fetch";
 import CryptUtil from "./CryptUtil";
+import PseudoBlock from "./PseudoBlock";
 import TextUtils from "./TextUtils";
 
-export default class Requester
-{
+export default class Requester {
   private readonly cu: CryptUtil;
   private readonly tu: TextUtils;
+  private readonly pseudo: PseudoBlock;
 
-  constructor() {
+  constructor(block: Buffer, iv: Buffer) {
     this.cu = new CryptUtil();
     this.tu = new TextUtils();
+    this.pseudo = new PseudoBlock(block, iv);
   }
 
   protected async send(payload: string): Promise<string> {
     const url = process.env.URL + payload;
-  
+
     const resp = await fetch(url);
     if (!resp.ok) {
       throw new Error(`Fetch error (${resp.status}): ${resp.statusText}`);
     }
-  
+
     return await resp.text();
   }
 
@@ -36,20 +38,22 @@ export default class Requester
     return !this.paddingError(response);
   }
 
-  public async findIntermediateFingerprint(block: Buffer, fpBlock?: Buffer): Promise<Buffer> {
-    if (typeof fpBlock === 'undefined') {
-      fpBlock = this.cu.initialFPBlock(block.length);
-    } else {
-      fpBlock = this.cu.increasePadding(fpBlock);
-    }
-
-    const binData = this.cu.joinBlocks([fpBlock, block]);
+  public async decipherBlock(): Promise<Buffer> {
+    const binData = this.cu.joinBlocks(this.pseudo.getFake());
     const payload = this.tu.bytes2src(binData);
 
     const result = await this.checkPaddingValidity(payload);
 
     if (result) {
-      return fpBlock;
+      const isRoyalFlush = this.pseudo.bingo();
+      if (isRoyalFlush !== null) {
+        return isRoyalFlush;
+      }
+      console.log("Found byte!");
+    } else {
+      this.pseudo.incrementByte();
     }
+
+    return this.decipherBlock();
   }
 }
