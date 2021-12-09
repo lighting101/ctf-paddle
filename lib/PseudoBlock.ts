@@ -88,33 +88,37 @@ export default class PseudoBlock {
     this.resultBlock[this.pointer] = byte;
   }
 
-  protected xorBlock(): Buffer {
+  public xorIM(targetBlock?: Buffer): Buffer {
+    if (typeof targetBlock === "undefined") {
+      targetBlock = this.iv;
+    }
+
     const bsize = this.observeBlock.length;
     const result = Buffer.allocUnsafe(bsize);
 
     for (let i = 0; i < bsize; i++) {
-      result[i] = this.iv[i] ^ this.resultBlock[i];
+      result[i] = targetBlock[i] ^ this.resultBlock[i];
     }
 
     return result;
   }
 
-  protected workFinished(): Buffer {
+  protected workFinished(): void {
     console.log("Works finished! Block:", this.resultBlock);
-    return this.xorBlock();
   }
 
-  public bingo(): null | Buffer {
+  public bingo(): boolean {
     const dByte = this.getDecipherByte();
     this.saveDecipherByte(dByte);
 
     try {
       this.shufflePointer();
     } catch {
-      return this.workFinished();
+      this.workFinished();
+      return true;
     }
 
-    return null;
+    return false;
   }
 
   public getFake(): Buffer[] {

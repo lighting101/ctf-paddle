@@ -38,22 +38,26 @@ export default class Requester {
     return !this.paddingError(response);
   }
 
-  public async decipherBlock(): Promise<Buffer> {
+  protected async findBlock(): Promise<void> {
     const binData = this.cu.joinBlocks(this.pseudo.getFake());
     const payload = this.tu.bytes2src(binData);
 
     const result = await this.checkPaddingValidity(payload);
 
     if (result) {
-      const isRoyalFlush = this.pseudo.bingo();
-      if (isRoyalFlush !== null) {
-        return isRoyalFlush;
+      if (this.pseudo.bingo()) {
+        return;
       }
       console.log("Found byte!");
     } else {
       this.pseudo.incrementByte();
     }
 
-    return await this.decipherBlock();
+    return await this.findBlock();
+  }
+
+  public async calculateBlock(): Promise<Buffer> {
+    await this.findBlock();
+    return this.pseudo.xorIM();
   }
 }

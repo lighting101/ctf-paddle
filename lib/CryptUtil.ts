@@ -30,4 +30,32 @@ export default class CryptUtil {
 
     return result;
   }
+
+  bytes2block(bytes: Buffer, bsize = 16): Buffer[] {
+    const blocksAmount = Math.ceil(bytes.length / bsize);
+    const paddingBytes = blocksAmount * bsize - bytes.length;
+
+    let oddBuffer: Buffer;
+
+    if (paddingBytes !== 0) {
+      oddBuffer = Buffer.allocUnsafe(blocksAmount * bsize);
+      oddBuffer.fill(paddingBytes);
+    } else {
+      oddBuffer = Buffer.allocUnsafe((blocksAmount + 1) * bsize);
+      oddBuffer.fill(0x0f);
+    }
+
+    bytes.copy(oddBuffer, 0, 0, bytes.length);
+
+    const result: Buffer[] = [];
+
+    for (let i = 0; i < oddBuffer.length / bsize; i++) {
+      const block = Buffer.allocUnsafe(bsize);
+      oddBuffer.copy(block, 0, i * bsize, (i + 1) * bsize);
+
+      result.push(block);
+    }
+
+    return result;
+  }
 }

@@ -5,13 +5,17 @@ config();
 
 const crypter = new Crypter();
 
-const srcText =
-  "dy4xU6NqCCoWuiYlbfJ3vRDrisVJWyBfV3mm1ZFPoO2X2xAo8LR!tBJBkH0vfVGre7AYfddxHSgIeYuDRwv-THhL1N8OJ1gLBhS2-H0ngTq5jk-Taz9oMaZ9LHhsQDHaVibCLJtRuAVqi9rCtXwGPLVYTyfrLdo1ZZ0qf!PjOO6VjJZmwPelcJlfcCFc44jkAEM3NrtOJNi3wO5hQVXmZw~~";
-
+// const srcText =
+//   "M3yFwEnfgxmdtbM52n8U2DDQJY3nsYDrVwMCLu5sTvfpPtAmR3b5C-U!Z7-R5WlhXbmZLUs1dyLJYQOfdJKi6WxBHtMe7UxVjkM9GtXSVAki7m78TSnAsM8otlau0KMWLu-STIlIEqQvsECWZJ7f6FMGnylFhhcsY2cCtePwxNyG2HJh8jHpoOJJKEzoyyHRktgFvO9Ze2sKA-9UOTHLMQ~~";
 
 async function main() {
-  const decipherText = await crypter.decrypt(srcText);
-  console.log(decipherText);
+  // const decipherText = await crypter.decrypt(srcText);
+  // console.log(decipherText);
+
+  const result = await crypter.encrypt(
+    '{"id":"1","key":"h2TZGJmZAtTfUdyjkdr7Yw~~"}'
+  );
+  console.log(result);
 }
 
 main();
