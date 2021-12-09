@@ -1,28 +1,17 @@
 import { config } from "dotenv";
-import TextUtils from "./lib/TextUtils";
-import CryptUtil from "./lib/CryptUtil";
-import Requester from "./lib/Requester";
+import Crypter from "./lib/Crypter";
 
 config();
 
-const tu = new TextUtils();
-const cu = new CryptUtil();
+const crypter = new Crypter();
 
 const srcText =
-  "bmAn3g7V!pfMYMkte0Y9kZEHZr!kL0lnPDzylll!p4oEBYbMaa6abOmqpb8wgh3Xx7-Nlm3HceJ22BjWanUGWBSCGaMI-uUxbrUeSczF5KYS47XsnJ3LwsCwkeFucb4nZYm6vcRu9XmI9DypGJ4j!eddYJjFCeJ1R0BTBURrdrlyYjZBVaRBMPq39lgtLKFFvKr-AiEqQ-4-4nyuN80Bpw~~";
-const src = tu.src2bytes(srcText);
+  "dy4xU6NqCCoWuiYlbfJ3vRDrisVJWyBfV3mm1ZFPoO2X2xAo8LR!tBJBkH0vfVGre7AYfddxHSgIeYuDRwv-THhL1N8OJ1gLBhS2-H0ngTq5jk-Taz9oMaZ9LHhsQDHaVibCLJtRuAVqi9rCtXwGPLVYTyfrLdo1ZZ0qf!PjOO6VjJZmwPelcJlfcCFc44jkAEM3NrtOJNi3wO5hQVXmZw~~";
+
 
 async function main() {
-  const blocks = cu.splitBlocks(src);
-  // const iv = blocks.splice(0, 1)[0];
-
-  const block = blocks[1];
-  const iv = blocks[0];
-
-  const r = new Requester(block, iv);
-
-  const decrypted = await r.decipherBlock();
-  console.log(decrypted.toString());
+  const decipherText = await crypter.decrypt(srcText);
+  console.log(decipherText);
 }
 
 main();

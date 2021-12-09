@@ -54,6 +54,6 @@ export default class Requester {
       this.pseudo.incrementByte();
     }
 
-    return this.decipherBlock();
+    return await this.decipherBlock();
   }
 }
