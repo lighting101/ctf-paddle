@@ -20,12 +20,8 @@ export default class PseudoBlock {
     this.pointer = bSize - 1;
   }
 
-  protected shufflePointer() {
+  shufflePointer() {
     this.pointer--;
-
-    if (this.pointer < 0) {
-      throw new Error("Pointer cannot be lower than zero");
-    }
 
     this.intermediateBlock[this.pointer] = 0;
     this.fillRightSide();
@@ -63,6 +59,16 @@ export default class PseudoBlock {
     }
 
     return result;
+  }
+
+  public getIntermediateBlock(): Buffer {
+    const buf = Buffer.allocUnsafe(16);
+    this.intermediateBlock.copy(buf, 0, 0, 16);
+    return buf;
+  }
+
+  public setIntermediateBlock(block: Buffer): void {
+    block.copy(this.intermediateBlock, 0, 0, 16);
   }
 
   public incrementByte() {
@@ -103,25 +109,26 @@ export default class PseudoBlock {
     return result;
   }
 
-  protected workFinished(): void {
-    console.log("Works finished! Block:", this.resultBlock);
-  }
-
-  public bingo(): boolean {
+  saveByte(): void {
     const dByte = this.getDecipherByte();
     this.saveDecipherByte(dByte);
+  }
 
+  public finishBlockCalc(): boolean {
+    
     try {
       this.shufflePointer();
     } catch {
-      this.workFinished();
       return true;
     }
 
     return false;
   }
 
-  public getFake(): Buffer[] {
-    return [this.intermediateBlock, this.observeBlock];
+  public getFake(block?: Buffer): Buffer[] {
+    if (typeof block === "undefined") {
+      block = this.intermediateBlock;
+    }
+    return [block, this.observeBlock];
   }
 }

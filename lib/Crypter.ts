@@ -1,3 +1,4 @@
+// import * as CliProgress from 'cli-progress';
 import TextUtils from "./TextUtils";
 import CryptUtil from "./CryptUtil";
 import Requester from "./Requester";
@@ -5,10 +6,12 @@ import Requester from "./Requester";
 export default class Crypter {
   private readonly cu: CryptUtil;
   private readonly tu: TextUtils;
+  private readonly threads: number;
 
-  constructor() {
+  constructor(threads = 10) {
     this.cu = new CryptUtil();
     this.tu = new TextUtils();
+    this.threads = threads
   }
 
   async decrypt(src: string): Promise<string> {
@@ -47,7 +50,7 @@ export default class Crypter {
     for (let i = 0; i < reversedPlainBlocks.length; i++) {
       const block = reversedResult[reversedResult.length - 1];
 
-      const r = new Requester(block, reversedPlainBlocks[i]);
+      const r = new Requester(block, reversedPlainBlocks[i], this.threads);
       const foundBlock = await r.calculateBlock();
       reversedResult.push(foundBlock);
     }
