@@ -2,6 +2,7 @@ import fetch from "node-fetch";
 import CryptUtil from "./CryptUtil";
 import PseudoBlock from "./PseudoBlock";
 import TextUtils from "./TextUtils";
+import { AbortSignal } from "node-fetch/externals";
 
 export default class Requester {
   private readonly cu: CryptUtil;
@@ -20,7 +21,7 @@ export default class Requester {
     const url = process.env.URL + payload;
 
     const resp = await fetch(url, {
-      signal: signal,
+      signal,
     });
 
     if (!resp.ok) {
